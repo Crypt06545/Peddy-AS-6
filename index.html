@@ -125,20 +125,51 @@
           <button class="btn bg-[#0E7A81] text-white">Sort By Price</button>
         </div>
       </section>
-      <!-- spinner  -->
+      <!-- Spinner -->
       <div class="flex justify-center items-center">
         <span class="loading loading-bars loading-lg"></span>
       </div>
+
+      <!-- Modal -->
+      <div
+        id="adoptModal"
+        class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden"
+      >
+        <div class="bg-white p-5 rounded-lg shadow-lg">
+          <h2 class="text-xl font-bold">Adoption Process</h2>
+          <p id="countdown" class="text-2xl font-bold">3</p>
+        </div>
+      </div>
+
+      <!-- Details Modal -->
+      <div
+        id="detailsModal"
+        class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+      >
+        <div
+          id="modalContent"
+          class="bg-white rounded-lg shadow-lg p-4 max-w-sm w-full sm:max-w-md sm:p-6 lg:max-w-lg"
+        >
+          <!-- Modal content will be dynamically injected here from JS -->
+        </div>
+      </div>
+
       <section class="w-[90%] mx-auto flex gap-5 flex-col lg:flex-row mt-7">
-        <!-- card container  -->
+        <!-- Card container -->
         <div
           id="petContainer"
           class="mx-auto grid grid-cols-1 lg:grid-cols-3 gap-4"
+        ></div>
+
+        <!-- Empty image placeholder -->
+        <div
+          id="likedImageContainer"
+          class="bg-base-100 w-72 shadow-xl p-3 rounded-lg border-2"
         >
-      
-      </div>
-        <!-- image empty of just  -->
-        <div class="bg-base-100 w-72 shadow-xl p-3 rounded-lg border-2"></div>
+          <div class="grid grid-cols-2 gap-1">
+            <!-- Liked images will be appended here -->
+          </div>
+        </div>
       </section>
     </main>
     <footer class="bg-black text-gray-300 py-8">
