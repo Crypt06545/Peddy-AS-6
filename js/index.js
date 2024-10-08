@@ -1,4 +1,4 @@
-// Fetch pet categories and display them
+// Fetch pet categories
 const loadCategories = () => {
   fetch("https://openapi.programming-hero.com/api/peddy/categories")
     .then((res) => res.json())
@@ -9,13 +9,13 @@ const loadCategories = () => {
 // Fetch the pet data
 const loadPetData = async () => {
   try {
-    // Show the spinner while loading
     document.querySelector(".loading").style.display = "block";
 
-    // Simulate a delay for the spinner (2 seconds)
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
-    const response = await fetch("https://openapi.programming-hero.com/api/peddy/pets");
+    const response = await fetch(
+      "https://openapi.programming-hero.com/api/peddy/pets"
+    );
     const data = await response.json();
 
     // Hide the spinner
@@ -36,18 +36,25 @@ const displayPets = (pets) => {
   const petContainer = document.getElementById("petContainer");
   petContainer.innerHTML = "";
 
+  if (pets.length === 0) {
+    petContainer.innerHTML = "<p>No pets available</p>";
+    return;
+  }
+
   pets.forEach((pet) => {
     const {
       pet_name = "Not available",
       breed = "Not available",
       date_of_birth = "Not available",
       gender = "Not available",
-      price = "Not available",
+      price = null,
       image = "https://via.placeholder.com/150",
-      petId
+      petId,
     } = pet;
 
-    const formattedPrice = price !== "Not available" ? `$${price}` : "Not available";
+    // Handle null or undefined price
+    const formattedPrice =
+      price === null || price === undefined ? "Not available" : `$${price}`;
 
     const petCard = `
       <div class="flex flex-col justify-center bg-base-100 shadow-xl p-3 rounded-lg border-2">
@@ -65,6 +72,7 @@ const displayPets = (pets) => {
         <div class="text-sm text-gray-500 mt-1">
           <i class="fas fa-dollar-sign mr-2"></i> Price: ${formattedPrice}
         </div>
+        <div class="border-b-2 my-2"></div>
         <div class="flex justify-between gap-2 mt-2">
           <button class="btn p-1 like-btn" data-id="${petId}">
             <i class="fa-regular fa-thumbs-up mr-2 text-xl text-[#0E7A81] font-bold"></i>
@@ -79,6 +87,136 @@ const displayPets = (pets) => {
   });
 
   attachEventListeners();
+};
+
+// Show categories in buttons
+let activeBtn = null;
+const showCategories = (categories) => {
+  const btnContainer = document.querySelector("#btn-container");
+  btnContainer.innerHTML = "";
+
+  if (categories.length === 0) {
+    btnContainer.innerHTML = "<p>No category here</p>";
+    return;
+  }
+
+  categories.forEach((category, index) => {
+    const categoryIcon =
+      category.category_icon || "https://via.placeholder.com/50";
+    const categoryName = category.category || "Not available";
+
+    const categoryBtn = document.createElement("div");
+    categoryBtn.classList.add(
+      "flex",
+      "justify-center",
+      "items-center",
+      "gap-10",
+      "mt-5"
+    );
+    categoryBtn.innerHTML = `
+      <button id="category-btn-${index}" class="category-btn flex items-center gap-2 border-2 px-6 py-2">
+        <img class="w-8" src="${categoryIcon}" alt="Category Icon" />
+        <span class="font-bold text-xl">${categoryName}</span>
+      </button>`;
+    btnContainer.appendChild(categoryBtn);
+
+    const button = document.querySelector(`#category-btn-${index}`);
+    button.addEventListener("click", () =>
+      handleCategoryClick(button, category.category)
+    );
+  });
+};
+
+// Handle category click
+const handleCategoryClick = (clickedBtn, categoryName) => {
+  if (activeBtn) {
+    activeBtn.classList.remove("rounded-full", "border-[#0E7A81]");
+  }
+  clickedBtn.classList.add("rounded-full", "border-[#0E7A81]");
+  activeBtn = clickedBtn;
+
+  const petContainer = document.getElementById("petContainer");
+  petContainer.innerHTML = "";
+
+  document.querySelector(".loading").style.display = "block";
+
+  // Set a 2-second delay
+  setTimeout(() => {
+    logCategoryName(categoryName);
+
+    document.querySelector(".loading").style.display = "none";
+  }, 2000);
+};
+
+// Fetch category name
+const logCategoryName = (categoryName) => {
+  const petContainer = document.getElementById("petContainer");
+
+  fetch(
+    `https://openapi.programming-hero.com/api/peddy/category/${categoryName}`
+  )
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.data.length === 0) {
+        petContainer.innerHTML = `
+          <div class="flex flex-col justify-center text-center items-center bg-gray-200 p-10 rounded-lg">
+            <div >
+              <img src="./images/error.webp" alt="No Data Available" class="w-32 h-32 mb-4"/>
+            </div>
+            <h1 class="text-4xl font-bold text-gray-600">No Information Available</h1>
+            <p class="text-gray-500 mt-4 text-center">
+              We couldn't find any pets under this category. Please try selecting a different category.
+            </p>
+          </div>
+        `;
+        petContainer.classList.remove("grid");
+      } else {
+        displayPets(data.data);
+
+        petContainer.classList.add("grid");
+      }
+    })
+    .catch((error) => console.error("Error fetching category data:", error));
+};
+
+// Add event listener for Sort By Price button
+const sortByPriceBtn = document.getElementById("sortPriceBtn");
+sortByPriceBtn.addEventListener("click", handleSortByPrice);
+
+function handleSortByPrice() {
+  // Show the spinner
+  document.querySelector(".loading").style.display = "block";
+
+  // Set a 2-second delay
+  setTimeout(() => {
+    // Sort pets by price in descending order
+    fetchSortedPets();
+
+    // Hide the spinner after 2 seconds
+    document.querySelector(".loading").style.display = "none";
+  }, 2000);
+}
+
+// Fetch and display sorted pets
+const fetchSortedPets = () => {
+  fetch("https://openapi.programming-hero.com/api/peddy/pets")
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.status && data.pets) {
+        const sortedPets = data.pets.sort((a, b) => {
+          const priceA =
+            a.price === null || a.price === undefined ? 0 : a.price;
+          const priceB =
+            b.price === null || b.price === undefined ? 0 : b.price;
+          return priceB - priceA;
+        });
+
+        displayPets(sortedPets);
+      } else {
+        console.error("Failed to fetch or sort pet data.");
+      }
+    })
+    .catch((error) => console.error("Error fetching or sorting pets:", error));
 };
 
 // Attach event listeners to buttons
@@ -99,72 +237,39 @@ const attachEventListeners = () => {
   });
 };
 
-// Fetch pet image when 'like' button is clicked and display it in a separate container
+// Fetch pet image
 const fetchPetImage = async (petId) => {
   try {
-    const response = await fetch(`https://openapi.programming-hero.com/api/peddy/pet/${petId}`);
+    const response = await fetch(
+      `https://openapi.programming-hero.com/api/peddy/pet/${petId}`
+    );
     const data = await response.json();
 
     if (data.status && data.petData) {
       const { image } = data.petData;
 
-      // Create a new div element for the image
       const imageDiv = document.createElement("div");
-      imageDiv.className = "flex justify-center items-center"; // Optional styling for the div
+      imageDiv.className =
+        "flex justify-center border p-1 rounded-lg items-center";
 
-      // Create a new image element
       const newImageElement = document.createElement("img");
       newImageElement.src = image;
       newImageElement.alt = "Liked Pet Image";
-      newImageElement.className = "w-[50px] h-[50px] object-cover rounded-lg"; // Adjust size
+      newImageElement.className = "object-cover rounded-lg";
 
-      // Append the image to the div
       imageDiv.appendChild(newImageElement);
 
-      // Display the fetched image in the container
-      const likedImageContainer = document.querySelector("#likedImageContainer .grid");
-      likedImageContainer.appendChild(imageDiv); // Append the new div to the grid container
+      const likedImageContainer = document.querySelector(
+        "#likedImageContainer .grid"
+      );
+      likedImageContainer.appendChild(imageDiv);
     }
   } catch (error) {
     console.error("Error fetching pet image:", error);
   }
 };
 
-
-
-
-// Show categories in buttons
-let activeBtn = null;
-const showCategories = (categories) => {
-  const btnContainer = document.querySelector("#btn-container");
-  btnContainer.innerHTML = "";
-
-  categories.forEach((category, index) => {
-    const categoryBtn = document.createElement("div");
-    categoryBtn.classList.add("flex", "justify-center", "items-center", "gap-10", "mt-5");
-    categoryBtn.innerHTML = `
-      <button id="category-btn-${index}" class="category-btn flex items-center gap-2 border-2 px-6 py-2">
-        <img class="w-8" src="${category.category_icon}" alt="${category.category}" />
-        <span class="font-bold text-xl">${category.category}</span>
-      </button>
-    `;
-    btnContainer.appendChild(categoryBtn);
-
-    const button = document.querySelector(`#category-btn-${index}`);
-    button.addEventListener("click", () => handleCategoryClick(button));
-  });
-};
-
-// Handle category click
-const handleCategoryClick = (clickedBtn) => {
-  if (activeBtn) {
-    activeBtn.classList.remove("rounded-full", "border-[#0E7A81]");
-  }
-  clickedBtn.classList.add("rounded-full", "border-[#0E7A81]");
-  activeBtn = clickedBtn;
-};
-
-// Show adoption modal with a countdown
+// Show adoption modal
 let countdownInterval;
 const showAdoptionModal = (button) => {
   const modal = document.getElementById("adoptModal");
@@ -211,7 +316,6 @@ const showDetailsModal = async (petId) => {
         vaccinated_status,
       } = data.petData;
 
-      // The HTML structure for the modal content
       const modalContent = `
         <!-- Image with 300x200 size -->
         <img src="${image}" alt="Pet Image" class="rounded-lg mb-2 w-full object-cover" />
@@ -257,10 +361,9 @@ const showDetailsModal = async (petId) => {
         </div>
       `;
 
-      // Inject the modal content into the #modalContent div
       const detailsModal = document.getElementById("detailsModal");
       detailsModal.querySelector("#modalContent").innerHTML = modalContent;
-      detailsModal.classList.remove("hidden"); // Show the modal
+      detailsModal.classList.remove("hidden");
     } else {
       console.error("Failed to fetch pet details.");
     }
@@ -269,17 +372,11 @@ const showDetailsModal = async (petId) => {
   }
 };
 
-// Close the details modal
 const closeDetailsModal = () => {
   const detailsModal = document.getElementById("detailsModal");
   detailsModal.classList.add("hidden");
-  detailsModal.querySelector("#modalContent").innerHTML = ""; // Clear modal content when closed
+  detailsModal.querySelector("#modalContent").innerHTML = "";
 };
 
-
-
-
-
-// Initialize functions
 loadCategories();
 loadPetData();

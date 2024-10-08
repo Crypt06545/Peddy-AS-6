@@ -68,7 +68,9 @@
             </div>
           </div>
           <div class="navbar-center hidden lg:flex">
-            <ul class="menu gap-4 menu-horizontal px-1 text-[#131313]">
+            <ul
+              class="menu gap-4 menu-horizontal px-1 text-[#131313] font-medium"
+            >
               <li>Home</li>
               <li>Shop</li>
               <li>Content</li>
@@ -94,10 +96,11 @@
           <h1 class="font-bold text-4xl mt-2">
             Your Path to Adoption <br />Starts Here
           </h1>
-          <p class="mt-4">
-            It is a long established fact that a reader will be distracted by
-            the readable content of a page when looking at its layout. The point
-            of using Lorem Ipsum is that it has a.
+          <p class="mt-4 text-gray-500 font-medium">
+            We believe that every pet deserves a forever home, and every family
+            deserves the joy that comes from adopting a pet. Our mission is to
+            connect you with your perfect match, ensuring a smooth and
+            fulfilling adoption process.
           </p>
           <button class="btn bg-[#0E7A81] text-white mt-4">View More</button>
         </div>
@@ -110,10 +113,11 @@
       <section class="w-[90%] mx-auto">
         <div class="text-center">
           <h1 class="font-black text-4xl">Adopt Your Best Friend</h1>
-          <p class="w-[65%] mx-auto mt-4 text-gray-400">
-            It is a long established fact that a reader will be distracted by
-            the readable content of a page when looking at its layout. The point
-            of using Lorem Ipsum is that it has a.
+          <p class="w-[65%] mx-auto mt-4 font-medium text-gray-400">
+            The love and companionship of a pet can transform your life. From
+            playful puppies to calm, senior pets, we help you find the right
+            companion to fit your lifestyle and needs. Start your adoption
+            journey today and give a pet the loving home they deserve.
           </p>
         </div>
 
@@ -121,8 +125,10 @@
         <div id="btn-container" class="grid lg:grid-cols-4 grid-cols-2"></div>
 
         <div class="w-[95%] mx-auto flex items-center justify-between mt-7">
-          <h3 class="font-black text-2xl">Best Deal For you</h3>
-          <button class="btn bg-[#0E7A81] text-white">Sort By Price</button>
+          <h3 class="font-black lg:text-2xl text-xl">Best Deal For you</h3>
+          <button id="sortPriceBtn" class="btn bg-[#0E7A81] text-white">
+            Sort By Price
+          </button>
         </div>
       </section>
       <!-- Spinner -->
@@ -133,11 +139,20 @@
       <!-- Modal -->
       <div
         id="adoptModal"
-        class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden"
+        class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
       >
-        <div class="bg-white p-5 rounded-lg shadow-lg">
-          <h2 class="text-xl font-bold">Adoption Process</h2>
-          <p id="countdown" class="text-2xl font-bold">3</p>
+        <div class="bg-white p-5 rounded-lg shadow-lg text-center w-80">
+          <div class="flex justify-center items-center">
+            <img
+              src="https://img.icons8.com/?size=100&id=6nrYifh6GrxJ&format=png&color=000000"
+              alt=""
+            />
+          </div>
+          <h1 class="font-bold text-2xl">Congrates</h1>
+          <p class="font-medium text-gray-400">
+            Adoption Process is Star for your Pet
+          </p>
+          <p id="countdown" class="text-5xl font-bold">3</p>
         </div>
       </div>
 
@@ -150,37 +165,37 @@
           id="modalContent"
           class="bg-white rounded-lg shadow-lg p-4 max-w-sm w-full sm:max-w-md sm:p-6 lg:max-w-lg"
         >
-          <!-- Modal content will be dynamically injected here from JS -->
+          <!-- Modal  -->
         </div>
       </div>
 
-      <section class="w-[90%] mx-auto flex gap-5 flex-col lg:flex-row mt-7">
+      <section class="w-[90%] mx-auto flex gap-5 flex-col lg:flex-row mt-10">
         <!-- Card container -->
         <div
           id="petContainer"
-          class="mx-auto grid grid-cols-1 lg:grid-cols-3 gap-4"
+          class="mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
         ></div>
 
         <!-- Empty image placeholder -->
         <div
           id="likedImageContainer"
-          class="bg-base-100 w-72 shadow-xl p-3 rounded-lg border-2"
+          class="bg-base-100 w-80 shadow-xl p-3 rounded-lg border-2"
         >
           <div class="grid grid-cols-2 gap-1">
-            <!-- Liked images will be appended here -->
+            <!-- Liked images  -->
           </div>
         </div>
       </section>
     </main>
-    <footer class="bg-black text-gray-300 py-8">
+    <footer class="bg-black text-gray-300 py-8 mt-20">
       <div
         class="w-[90%] mx-auto lg:flex lg:justify-between lg:items-start space-y-6 lg:space-y-0"
       >
-        <!-- Company Details Section with Logo -->
+        <!-- Company Details -->
         <div class="lg:w-1/3 space-y-3">
           <div class="flex justify-start items-center gap-2">
             <img src="./images/logo.webp" alt="Peddy Logo" class="w-10" />
-            <a class="text-2xl font-bold text-emerald-500">Peddy</a>
+            <a class="text-2xl font-bold text-white">Peddy</a>
           </div>
           <p>Location: 165 Washington Ave, NY CA 54003</p>
           <p>Phone: +31 85 964 47 25</p>
@@ -190,18 +205,32 @@
           <!-- Social Icons -->
           <div class="flex space-x-4 mt-2">
             <a href="#"
-              ><img src="facebook-icon.png" alt="Facebook" class="w-6 h-6"
+              ><img
+                src="https://img.icons8.com/?size=100&id=uLWV5A9vXIPu&format=png&color=000000"
+                alt="Facebook"
+                class="w-6 h-6"
             /></a>
             <a href="#"
-              ><img src="youtube-icon.png" alt="YouTube" class="w-6 h-6"
+              ><img
+                src="https://img.icons8.com/?size=100&id=cMRBi0rI3iwb&format=png&color=000000  "
+                alt="x"
+                class="w-6 h-6"
             /></a>
             <a href="#"
-              ><img src="instagram-icon.png" alt="Instagram" class="w-6 h-6"
+              ><img
+                src="https://img.icons8.com/?size=100&id=19318&format=png&color=000000"
+                alt="YouTube"
+                class="w-6 h-6"
+            /></a>
+            <a href="#"
+              ><img
+                src="https://img.icons8.com/?size=100&id=Xy10Jcu1L2Su&format=png&color=000000"
+                alt="Instagram"
+                class="w-6 h-6"
             /></a>
           </div>
         </div>
 
-        <!-- Useful Links Section -->
         <div class="lg:w-1/3">
           <h3 class="text-xl font-semibold mb-3">Useful Links</h3>
           <ul class="space-y-2">
