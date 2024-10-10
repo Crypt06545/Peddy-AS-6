@@ -32,6 +32,7 @@ const loadPetData = async () => {
 };
 
 // Display pet cards in the container
+
 const displayPets = (pets) => {
   const petContainer = document.getElementById("petContainer");
   petContainer.innerHTML = "";
@@ -45,12 +46,15 @@ const displayPets = (pets) => {
     const {
       pet_name = "Not available",
       breed = "Not available",
-      date_of_birth = "Not available",
+      date_of_birth,
       gender = "Not available",
       price = null,
       image = "https://via.placeholder.com/150",
       petId,
     } = pet;
+
+    // Handle null or undefined date_of_birth
+    const formattedBirthDate = date_of_birth ? date_of_birth : "Not available";
 
     // Handle null or undefined price
     const formattedPrice =
@@ -64,7 +68,7 @@ const displayPets = (pets) => {
           <i class="fa-solid fa-table-cells-large mr-2"></i> Breed: ${breed}
         </div>
         <div class="text-sm text-gray-500 mt-1">
-          <i class="fas fa-calendar-alt mr-2"></i> Birth: ${date_of_birth}
+          <i class="fas fa-calendar-alt mr-2"></i> Birth: ${formattedBirthDate}
         </div>
         <div class="text-sm text-gray-500 mt-1">
           <i class="fas fa-venus mr-2"></i> Gender: ${gender}
@@ -96,7 +100,18 @@ const showCategories = (categories) => {
   btnContainer.innerHTML = "";
 
   if (categories.length === 0) {
-    btnContainer.innerHTML = "<p>No category here</p>";
+    btnContainer.innerHTML = 
+    `
+          <div class="flex flex-col justify-center text-center items-center bg-gray-200 p-10 rounded-lg">
+            <div >
+              <img src="./images/error.webp" alt="No Data Available" class="w-32 h-32 mb-4"/>
+            </div>
+            <h1 class="text-4xl font-bold text-gray-600">No Information Available</h1>
+            <p class="text-gray-500 mt-4 text-center">
+              We couldn't find any pets under this category. Please try selecting a different category.
+            </p>
+          </div>
+    `
     return;
   }
 
@@ -189,10 +204,7 @@ function handleSortByPrice() {
 
   // Set a 2-second delay
   setTimeout(() => {
-    // Sort pets by price in descending order
     fetchSortedPets();
-
-    // Hide the spinner after 2 seconds
     document.querySelector(".loading").style.display = "none";
   }, 2000);
 }
@@ -306,15 +318,19 @@ const showDetailsModal = async (petId) => {
 
     if (data.status && data.petData) {
       const {
-        pet_name,
-        breed,
+        pet_name = "Not available",
+        breed = "Not available",
         date_of_birth,
         price,
-        image,
-        gender,
-        pet_details,
-        vaccinated_status,
+        image = "https://via.placeholder.com/300x200",
+        gender = "Not available",
+        pet_details = "No additional details available.",
+        vaccinated_status = "Unknown",
       } = data.petData;
+
+      // Handle null or undefined values for birth date and price
+      const formattedBirthDate = date_of_birth ? date_of_birth : "Not available";
+      const formattedPrice = price === null || price === undefined ? "Not available" : `$${price}`;
 
       const modalContent = `
         <!-- Image with 300x200 size -->
@@ -331,7 +347,7 @@ const showDetailsModal = async (petId) => {
             </p>
             <p class="flex items-center">
                 <i class="fas fa-calendar-alt mr-2"></i>
-                <strong>Birth:</strong> ${date_of_birth}
+                <strong>Birth:</strong> ${formattedBirthDate}
             </p>
             <p class="flex items-center">
                 <i class="fas fa-venus mr-2"></i>
@@ -339,7 +355,7 @@ const showDetailsModal = async (petId) => {
             </p>
             <p class="flex items-center">
                 <i class="fas fa-dollar-sign mr-2"></i>
-                <strong>Price:</strong> ${price}
+                <strong>Price:</strong> ${formattedPrice}
             </p>
             <p class="flex items-center">
                 <i class="fa-solid fa-syringe mr-2"></i>
@@ -371,6 +387,7 @@ const showDetailsModal = async (petId) => {
     console.error("Error fetching pet details:", error);
   }
 };
+
 
 const closeDetailsModal = () => {
   const detailsModal = document.getElementById("detailsModal");
