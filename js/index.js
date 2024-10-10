@@ -100,8 +100,7 @@ const showCategories = (categories) => {
   btnContainer.innerHTML = "";
 
   if (categories.length === 0) {
-    btnContainer.innerHTML = 
-    `
+    btnContainer.innerHTML = `
           <div class="flex flex-col justify-center text-center items-center bg-gray-200 p-10 rounded-lg">
             <div >
               <img src="./images/error.webp" alt="No Data Available" class="w-32 h-32 mb-4"/>
@@ -111,7 +110,7 @@ const showCategories = (categories) => {
               We couldn't find any pets under this category. Please try selecting a different category.
             </p>
           </div>
-    `
+    `;
     return;
   }
 
@@ -308,7 +307,6 @@ const showAdoptionModal = (button) => {
   }, 1000);
 };
 
-// Show pet details modal
 const showDetailsModal = async (petId) => {
   try {
     const response = await fetch(
@@ -320,17 +318,21 @@ const showDetailsModal = async (petId) => {
       const {
         pet_name = "Not available",
         breed = "Not available",
-        date_of_birth,
-        price,
+        date_of_birth = "Not available",
+        price = "Not available",
         image = "https://via.placeholder.com/300x200",
         gender = "Not available",
-        pet_details = "No additional details available.",
-        vaccinated_status = "Unknown",
+        pet_details = "Not available.",
+        vaccinated_status = "Not available",
       } = data.petData;
 
-      // Handle null or undefined values for birth date and price
-      const formattedBirthDate = date_of_birth ? date_of_birth : "Not available";
-      const formattedPrice = price === null || price === undefined ? "Not available" : `$${price}`;
+
+      const formattedBirthDate = date_of_birth || "Not available";
+      const formattedPrice = price ? `$${price}` : "Not available";
+      const formattedVaccinatedStatus =
+        !vaccinated_status || vaccinated_status.toLowerCase() === "not"
+          ? "Not available"
+          : vaccinated_status;
 
       const modalContent = `
         <!-- Image with 300x200 size -->
@@ -359,7 +361,7 @@ const showDetailsModal = async (petId) => {
             </p>
             <p class="flex items-center">
                 <i class="fa-solid fa-syringe mr-2"></i>
-                <strong>Vaccinated status:</strong> ${vaccinated_status}
+                <strong>Vaccinated status:</strong> ${formattedVaccinatedStatus}
             </p>
         </div>
 
